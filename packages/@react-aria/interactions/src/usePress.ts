@@ -17,7 +17,7 @@
 
 import {disableTextSelection, restoreTextSelection} from './textSelection';
 import {DOMAttributes, FocusableElement, PressEvent as IPressEvent, PointerType, PressEvents} from '@react-types/shared';
-import {focusWithoutScrolling, isVirtualClick, isVirtualPointerEvent, mergeProps, useEffectEvent, useGlobalListeners, useSyncRef} from '@react-aria/utils';
+import {focusWithoutScrolling, isVirtualClick, mergeProps, useEffectEvent, useGlobalListeners, useSyncRef} from '@react-aria/utils';
 import {PressResponderContext} from './context';
 import {RefObject, useContext, useEffect, useMemo, useRef, useState} from 'react';
 
@@ -338,15 +338,6 @@ export function usePress(props: PressHookProps): PressResult {
       pressProps.onPointerDown = (e) => {
         // Only handle left clicks, and ignore events that bubbled through portals.
         if (e.button !== 0 || !e.currentTarget.contains(e.target as Element)) {
-          return;
-        }
-
-        // iOS safari fires pointer events from VoiceOver with incorrect coordinates/target.
-        // Ignore and let the onClick handler take care of it instead.
-        // https://bugs.webkit.org/show_bug.cgi?id=222627
-        // https://bugs.webkit.org/show_bug.cgi?id=223202
-        if (isVirtualPointerEvent(e.nativeEvent)) {
-          state.pointerType = 'virtual';
           return;
         }
 
